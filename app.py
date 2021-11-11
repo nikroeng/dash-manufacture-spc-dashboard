@@ -40,7 +40,7 @@ def build_banner():
         id='banner',
         className="banner",
         children=[
-            html.H5('Manufacturing SPC Dashboard - Process Control and Exception Reporting'),
+            html.H5('LCAero - Real-time sustainability performance'),
             html.Button(
                 id='learn-more-button',
                 children="LEARN MORE",
@@ -230,7 +230,7 @@ def generate_modal():
 
                         'dash-manufacture-spc-dashboard` is a dashboard for monitoring read-time process quality along manufacture production line. 
 
-                        **What does this app shows**
+                        **What does this app show**
 
                         Click on buttons in `Parameter' column to visualize details of measurement trendlines on the bottom panel.
 
@@ -363,11 +363,11 @@ def build_quick_stats_panel():
                 id="card-1",
                 className='four columns',
                 children=[
-                    html.H5("Operator ID"),
+                    html.H5("Flight #"),
                     daq.LEDDisplay(
-                        value='1704',
+                        value='755',
                         color=theme['secondary'],
-                        size=50,
+                        size=80,
                         theme=theme
                     )
                 ]
@@ -377,14 +377,15 @@ def build_quick_stats_panel():
                 id='card-2',
                 className='four columns',
                 children=[
-                    html.H5("Time to completion"),
+                    html.H5("Overall performance indicator"),
                     daq.Gauge(
                         id='progress-gauge',
-                        value=0,
+                        value=8,
+                        showCurrentValue=True,
                         size=150,
-                        max=max_length * 2,
+                        max=10,
                         min=0,
-                        color=theme['secondary']
+                        color={"gradient":True,"ranges":{"green":[0,6],"yellow":[6,8],"red":[8,10]}}
                     )
                 ]
             ),
@@ -421,7 +422,7 @@ def build_top_panel():
                 className='eight columns',
                 style={'height': '100%'},
                 children=[
-                    generate_section_banner('Process Control Metrics Summary'),
+                    generate_section_banner('Flight Performance Summary'),
                     generate_metric_list_header(),
                     html.Div(
                         # id='metric_div',
@@ -450,7 +451,7 @@ def build_top_panel():
                 id='ooc-piechart-outer',
                 className='four columns',
                 children=[
-                    generate_section_banner('% OOC per Parameter'),
+                    generate_section_banner('% per Parameter'),
                     generate_piechart()
                 ]
             )
@@ -533,7 +534,7 @@ def generate_metric_row_helper(index):
             'children': html.Button(
                 id=button_id,
                 children=item,
-                title="Click to visualize live SPC chart",
+                title="Click to visualize live-chart",
                 n_clicks=0
             )
         },
@@ -657,7 +658,7 @@ def build_chart_panel():
         id='control-chart-container',
         className='twelve columns',
         children=[
-            generate_section_banner('Live SPC Chart'),
+            generate_section_banner('Live Chart'),
 
             dcc.Interval(
                 id='interval-component',
@@ -918,17 +919,17 @@ def stop_production(_, current):
 
 
 # ======= update progress gauge =========
-@app.callback(
-    output=Output('progress-gauge', 'value'),
-    inputs=[Input('interval-component', 'n_intervals')]
-)
-def update_gauge(interval):
-    if interval < max_length:
-        total_count = interval
-    else:
-        total_count = max_length
+# @app.callback(
+#     output=Output('progress-gauge', 'value'),
+#     inputs=[Input('interval-component', 'n_intervals')]
+# )
+# def update_gauge(interval):
+#     if interval < max_length:
+#         total_count = interval
+#     else:
+#         total_count = max_length
 
-    return int(total_count)
+#     return int(total_count)
 
 
 def update_sparkline(interval, param):
