@@ -20,12 +20,7 @@ app = dash.Dash(__name__)
 server = app.server
 app.config['suppress_callback_exceptions'] = True
 
-
-
-
 df = pd.read_csv("data/spc_data.csv")
-
-
 
 params = list(df)
 max_length = len(df)
@@ -70,7 +65,7 @@ def build_tabs():
         children=[
             dcc.Tabs(
                 id='app-tabs',
-                value='tab1',
+                value='tab3',
                 className='custom-tabs',
                 children=[
                     dcc.Tab(
@@ -181,7 +176,7 @@ def build_tab_1():
                     id='metric-select-dropdown',
                     options=list({'label': param, 'value': param} for param in params[1:]),
                     value=params[1]
-                ),
+               ),
         html.Div(
             className='',
             children=[
@@ -200,9 +195,10 @@ def build_tab_1():
                         {'label': 'B788', 'value': 'B788'},
                     ],
                     value='A380',                    
+                    ),
+                    ]
                 ),
-            ]
-        )
+        html.Div(id='input-path')
                 ]),
 
         html.Div(
@@ -300,6 +296,20 @@ app.layout = html.Div(
 
 
 # ===== Callbacks to update values based on store data and dropdown selection =====
+@app.callback(
+    Output('input-path', 'children'),
+    Input('aircraft-select-dropdown', 'value')
+)
+
+def update_df(value):
+    print(value)
+    print(type(value))
+    df = pd.read_csv("backend/model/A333.csv".format(value))
+    print(df)
+    params = list(df)
+    max_length = len(df)
+    return df, params, max_length
+
 @app.callback(
     output=[
         Output('value-setter-panel', 'children'),
