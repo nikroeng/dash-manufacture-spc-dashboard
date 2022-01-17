@@ -1,15 +1,15 @@
 import dash
-#import dash_core_components as dcc
-#import dash_html_components as html
+import dash_core_components as dcc
+import dash_html_components as html
 
-from dash import dcc
-from dash import html
+#from dash import dcc
+#from dash import html
 
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
-from dash import dash_table
-#import dash_table
+#from dash import dash_table
+import dash_table
 import plotly.graph_objs as go
 import dash_daq as daq
 from textwrap import dedent
@@ -20,7 +20,12 @@ app = dash.Dash(__name__)
 server = app.server
 app.config['suppress_callback_exceptions'] = True
 
+
+
+
 df = pd.read_csv("data/spc_data.csv")
+
+
 
 params = list(df)
 max_length = len(df)
@@ -53,7 +58,7 @@ def build_banner():
                 n_clicks=0,
             ),
             html.Img(
-                src="https://s3-us-west-1.amazonaws.com/plotly-tutorials/logo/new-branding/dash-logo-by-plotly-stripe-inverted.png")
+                src="https://s3-us-west-1.amazonaws.com/plotly-tutorials/logo/new-branding/dash-logo-by-plotly-stripe-inverted.png") #updatae LOGO
         ]
     )
 
@@ -170,13 +175,35 @@ def build_tab_1():
         html.Div(
             className='five columns',
             children=[
-                html.Label(id='metric-select-title', children='Select Metrics'),
+                html.Label(id='metric-select-title', children='Select Metrics', style={"font-weight": "bold"}),
                 html.Br(),
                 dcc.Dropdown(
                     id='metric-select-dropdown',
                     options=list({'label': param, 'value': param} for param in params[1:]),
                     value=params[1]
-                )]),
+                ),
+        html.Div(
+            className='',
+            children=[
+                html.Br(),
+                html.Label(id='aircraft-select', children='Select Aircraft', style={"font-weight": "bold"}),
+                html.Br(),
+                dcc.Dropdown(
+                    id='aircraft-select-dropdown',
+                    options=[
+                        {'label': 'A332', 'value': 'A332'},
+                        {'label': 'A333', 'value': 'A333'},
+                        {'label': 'A350', 'value': 'A350'},
+                        {'label': 'A380', 'value': 'A380'},
+                        {'label': 'B77W', 'value': 'B77W'},
+                        {'label': 'B748', 'value': 'B748'},
+                        {'label': 'B788', 'value': 'B788'},
+                    ],
+                    value='A380',                    
+                ),
+            ]
+        )
+                ]),
 
         html.Div(
             className='five columns',
