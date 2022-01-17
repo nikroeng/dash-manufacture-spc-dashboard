@@ -20,8 +20,9 @@ app = dash.Dash(__name__)
 server = app.server
 app.config['suppress_callback_exceptions'] = True
 
-df = pd.read_csv("data/spc_data.csv")
+dfpath = "data/spc_data.csv"
 
+df = pd.read_csv(dfpath)
 params = list(df)
 max_length = len(df)
 
@@ -150,15 +151,6 @@ def populate_ooc(data, ucl, lcl):
     return ret
 
 
-state_dict = init_df()
-
-
-def init_value_setter_store():
-    # Initialize store data
-    state_dict = init_df()
-    return state_dict
-
-
 def build_tab_1():
     return [
         # Manually select metrics
@@ -198,7 +190,7 @@ def build_tab_1():
                     ),
                     ]
                 ),
-        html.Div(id='input-path')
+        html.Div(id='input-path', children='A380')
                 ]),
 
         html.Div(
@@ -213,6 +205,27 @@ def build_tab_1():
             ]
         )
     ]
+
+@app.callback(
+    Output('input-path', 'children'),
+    Input('aircraft-select-dropdown', 'value')
+)
+
+def update_df(value):
+    dfpath = "backend/model/{}.csv".format(value)
+    return dfpath
+
+df = pd.read_csv(dfpath)
+params = list(df)
+max_length = len(df)
+
+state_dict = init_df()
+
+
+def init_value_setter_store():
+    # Initialize store data
+    state_dict = init_df()
+    return state_dict
 
 
 ud_usl_input = daq.NumericInput(id='ud_usl_input', size=200, max=9999999, style={'width': '100%', 'height': '100%'})
@@ -274,6 +287,7 @@ def generate_modal():
     )
 
 
+
 app.layout = html.Div(
     children=[
         build_banner(),
@@ -296,20 +310,6 @@ app.layout = html.Div(
 
 
 # ===== Callbacks to update values based on store data and dropdown selection =====
-@app.callback(
-    Output('input-path', 'children'),
-    Input('aircraft-select-dropdown', 'value')
-)
-
-def update_df(value):
-    print(value)
-    print(type(value))
-    df = pd.read_csv("backend/model/A333.csv".format(value))
-    print(df)
-    params = list(df)
-    max_length = len(df)
-    return df, params, max_length
-
 @app.callback(
     output=[
         Output('value-setter-panel', 'children'),
